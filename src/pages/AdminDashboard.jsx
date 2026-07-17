@@ -42,6 +42,8 @@ function AdminDashboard() {
 
   const [products, setProducts] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const PRODUCTS_PER_PAGE = 5
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [isEditingProduct, setIsEditingProduct] = useState(null)
   const isFormOpen = isAddingProduct || isEditingProduct !== null;
@@ -317,6 +319,22 @@ function AdminDashboard() {
   const filteredProducts = products.filter((p) => {
     return p.name.toLowerCase().includes(searchQuery.toLowerCase())
   })
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE))
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  )
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, products.length])
 
   const triggerFillEdit = (product) => {
     setIsEditingProduct(product)
@@ -744,7 +762,7 @@ function AdminDashboard() {
         <div className="max-h-104 overflow-y-auto space-y-3 pr-1">
 
 
-          {filteredProducts.map((p) => (
+          {paginatedProducts.map((p) => (
             <div key={p.id} className="flex flex-col gap-3 rounded-3xl bg-white/90 p-4 text-xs shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <span className="font-bold block text-gray-800 truncate">{p.name}</span>
@@ -791,6 +809,28 @@ function AdminDashboard() {
 
             </div>
           ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between rounded-3xl bg-white/90 p-3 text-sm text-gray-600 shadow-sm">
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-semibold transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            قبلی
+          </button>
+          <span>
+            صفحه {currentPage} از {totalPages}
+          </span>
+          <button
+            type="button"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-semibold transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            بعدی
+          </button>
         </div>
 
       </div>
