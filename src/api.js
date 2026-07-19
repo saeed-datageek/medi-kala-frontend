@@ -203,3 +203,12 @@ export const deleteDiscount = (discountId) => {
 export const getProductCategories = () => {
   return apiFetch('/shop/admin/products/categories/')
 }
+
+export const getPublicProducts = () => {
+  return apiFetch('/shop/products/')
+}
+
+export const getPublicProductDetails = (productId) => {
+  return apiFetch(`/shop/products/${productId}/`)
+}
+
