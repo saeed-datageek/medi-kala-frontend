@@ -25,7 +25,7 @@ export default function Navbar({ cartCount, onOpenCart, searchQuery, setSearchQu
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-extrabold text-slate-800 tracking-tight flex items-center gap-1">
-                  مدی‌کالا
+                  پارسین طب
                   <span className="text-xs bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full border border-teal-200/60 font-medium">پزشکی</span>
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium tracking-wide">تجهیزات و ملزومات سلامت</span>
@@ -63,8 +63,18 @@ export default function Navbar({ cartCount, onOpenCart, searchQuery, setSearchQu
             </form>
           </div>
 
-          {/* Left: Actions (Cart & Admin Portal) */}
+          {/* Left: Actions (Profile, Cart & Admin Portal) */}
           <div className="flex items-center gap-3">
+            {/* User Profile Button */}
+            <Link
+              to="/profile"
+              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-xl transition-colors"
+              title="حساب کاربری"
+            >
+              <User className="w-4 h-4 text-teal-600" />
+              <span className="hidden sm:inline">حساب کاربری</span>
+            </Link>
+
             {/* Admin Portal Button */}
             <Link
               to="/admin"
@@ -131,6 +141,13 @@ export default function Navbar({ cartCount, onOpenCart, searchQuery, setSearchQu
               همه محصولات
             </Link>
             <Link
+              to="/profile"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-teal-50 rounded-lg"
+            >
+              حساب کاربری و سفارش‌ها
+            </Link>
+            <Link
               to="/admin"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-teal-50 rounded-lg"
@@ -139,6 +156,7 @@ export default function Navbar({ cartCount, onOpenCart, searchQuery, setSearchQu
             </Link>
           </div>
         )}
+
       </div>
     </header>
   );

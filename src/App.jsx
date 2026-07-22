@@ -8,6 +8,9 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import Navbar from "./components/Navbar";
 import CartDrawer from "./components/CartDrawer";
 
+import ProfilePage from "./pages/ProfilePage";
+import PaymentPage from "./pages/PaymentPage";
+
 function PrivateRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem("accessToken")));
 
@@ -164,6 +167,19 @@ function App() {
               />
             }
           />
+          <Route
+            path="/profile"
+            element={
+              <ProfilePage
+                onAddToCart={handleAddToCart}
+                onOpenCart={() => setIsCartOpen(true)}
+              />
+            }
+          />
+          <Route
+            path="/payment/:orderId"
+            element={<PaymentPage />}
+          />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -180,5 +196,6 @@ function App() {
     </BrowserRouter>
   );
 }
+
 
 export default App;

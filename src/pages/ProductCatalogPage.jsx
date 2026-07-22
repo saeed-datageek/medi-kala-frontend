@@ -81,7 +81,7 @@ export default function ProductCatalogPage({ onAddToCart, searchQuery }) {
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
-              مرکز تخصصی تجهیزات و ملزومات پزشکی <span className="text-teal-400">مدی‌کالا</span>
+              مرکز تخصصی تجهیزات و ملزومات پزشکی <span className="text-teal-400">پارسین طب</span>
             </h1>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">

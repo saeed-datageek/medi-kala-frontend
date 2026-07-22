@@ -111,9 +111,10 @@ export default function ProductDetailPage({ onAddToCart }) {
   const sizesList = Array.isArray(size) ? size : (size ? [size] : []);
 
   const originalPrice = Number(price) || 0;
-  const isDiscountActive = Boolean(current_discount?.is_active);
-  const discountPercent = isDiscountActive ? Number(current_discount.discount_percentage) : 0;
-  const finalPrice = discountPercent > 0 ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
+  const discountPercent = current_discount ? Number(current_discount.discount_percentage || 0) : 0;
+  const hasDiscount = Boolean(current_discount) && discountPercent > 0;
+  const finalPrice = hasDiscount ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
+  const savedAmount = hasDiscount ? originalPrice - finalPrice : 0;
 
   const handleAdd = () => {
     if (onAddToCart) {
@@ -166,8 +167,8 @@ export default function ProductDetailPage({ onAddToCart }) {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
 
-              {isDiscountActive && discountPercent > 0 && (
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs font-black px-3 py-1.5 rounded-xl shadow-md flex items-center gap-1">
+              {hasDiscount && (
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-black px-3 py-1.5 rounded-xl shadow-md flex items-center gap-1">
                   <Tag className="w-4 h-4" />
                   <span>٪{digitsEnToFa(discountPercent)} تخفیف ویژه</span>
                 </div>
@@ -264,24 +265,42 @@ export default function ProductDetailPage({ onAddToCart }) {
             {/* Price & Cart Actions Block */}
             <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-100 space-y-4">
               
-              {/* Price Row */}
-              <div className="flex items-center justify-between">
+              {/* Price Row — Digikala style */}
+              <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500">قیمت محصول:</span>
-                
-                <div className="flex flex-col items-end">
-                  {isDiscountActive && discountPercent > 0 && (
-                    <span className="text-xs text-slate-400 line-through font-medium">
-                      {digitsEnToFa(originalPrice.toLocaleString())} تومان
-                    </span>
-                  )}
+                {hasDiscount ? (
+                  <div className="space-y-1">
+                    {/* percent pill + crossed original */}
+                    <div className="flex items-center gap-2">
+                      <span className="bg-rose-100 text-rose-600 text-xs font-black px-2 py-0.5 rounded-lg">
+                        ٪{digitsEnToFa(discountPercent)}
+                      </span>
+                      <span className="text-sm text-slate-400 line-through font-medium">
+                        {digitsEnToFa(originalPrice.toLocaleString())} تومان
+                      </span>
+                    </div>
+                    {/* final price */}
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-rose-600">
+                        {digitsEnToFa(finalPrice.toLocaleString())}
+                      </span>
+                      <span className="text-sm font-bold text-slate-500">تومان</span>
+                    </div>
+                    {/* savings callout */}
+                    <div className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-lg">
+                      {digitsEnToFa(savedAmount.toLocaleString())} تومان صرفه‌جویی
+                    </div>
+                  </div>
+                ) : (
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-teal-700">
+                    <span className="text-3xl font-black text-teal-700">
                       {digitsEnToFa(finalPrice.toLocaleString())}
                     </span>
-                    <span className="text-xs font-bold text-slate-600">تومان</span>
+                    <span className="text-sm font-bold text-slate-500">تومان</span>
                   </div>
-                </div>
+                )}
               </div>
+
 
               {/* Quantity and CTA */}
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">

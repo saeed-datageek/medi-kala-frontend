@@ -8,9 +8,11 @@ export default function ProductCard({ product, onAddToCart }) {
   const mainImage = image || (images && images.length > 0 ? images[0] : null) || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80";
 
   const originalPrice = Number(price) || 0;
-  const isDiscountActive = Boolean(current_discount?.is_active);
-  const discountPercent = isDiscountActive ? Number(current_discount.discount_percentage) : 0;
-  const finalPrice = discountPercent > 0 ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
+  const discountPercent = Number(current_discount?.discount_percentage || 0);
+  const hasDiscount = Boolean(current_discount?.is_active) && discountPercent > 0;
+  const finalPrice = hasDiscount ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
+  const savedAmount = hasDiscount ? originalPrice - finalPrice : 0;
+
 
   const sizesList = Array.isArray(size) ? size : (size ? [size] : []);
 
@@ -27,7 +29,7 @@ export default function ProductCard({ product, onAddToCart }) {
         />
 
         {/* Discount Badge */}
-        {isDiscountActive && discountPercent > 0 && (
+        {hasDiscount &&  (
           <div className="absolute top-3 right-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs font-black px-2.5 py-1 rounded-xl shadow-md flex items-center gap-1">
             <Tag className="w-3.5 h-3.5" />
             <span>٪{digitsEnToFa(discountPercent)} تخفیف</span>
@@ -102,20 +104,36 @@ export default function ProductCard({ product, onAddToCart }) {
 
         {/* Price & Action */}
         <div className="pt-2 flex items-end justify-between border-t border-slate-100">
-          
-          {/* Price */}
-          <div className="flex flex-col">
-            {isDiscountActive && discountPercent > 0 && (
-              <span className="text-[11px] text-slate-400 line-through font-medium">
-                {digitsEnToFa(originalPrice.toLocaleString())}
-              </span>
+
+          {/* Price — Digikala style */}
+          <div className="flex flex-col gap-0.5">
+            {hasDiscount ? (
+              <>
+                {/* Discount percent pill + original crossed */}
+                <div className="flex items-center gap-1.5">
+                  <span className="bg-rose-100 text-rose-600 text-[10px] font-black px-1.5 py-0.5 rounded-md">
+                    ٪{digitsEnToFa(discountPercent)}
+                  </span>
+                  <span className="text-[11px] text-slate-400 line-through font-medium">
+                    {digitsEnToFa(originalPrice.toLocaleString())}
+                  </span>
+                </div>
+                {/* Final price */}
+                <div className="flex items-baseline gap-1">
+                  <span className="text-base font-black text-rose-600">
+                    {digitsEnToFa(finalPrice.toLocaleString())}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-500">تومان</span>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-baseline gap-1">
+                <span className="text-base font-black text-slate-900">
+                  {digitsEnToFa(finalPrice.toLocaleString())}
+                </span>
+                <span className="text-[10px] font-bold text-slate-500">تومان</span>
+              </div>
             )}
-            <div className="flex items-baseline gap-1">
-              <span className="text-base font-black text-slate-900">
-                {digitsEnToFa(finalPrice.toLocaleString())}
-              </span>
-              <span className="text-[10px] font-bold text-slate-500">تومان</span>
-            </div>
           </div>
 
           {/* Add to Cart Button */}

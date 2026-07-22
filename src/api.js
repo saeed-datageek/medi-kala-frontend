@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:8000').replace(/\/+$/, '')
 
 const parseResponse = async (response) => {
   if (response.status === 204) return null
@@ -211,4 +211,27 @@ export const getPublicProducts = () => {
 export const getPublicProductDetails = (productId) => {
   return apiFetch(`/shop/products/${productId}/`)
 }
+
+export const getProfile = () => apiFetch('/shop/profile/')
+
+export const updateProfile = (data) =>
+  apiFetch('/shop/profile/', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  })
+
+export const createOrder = (data) =>
+  apiFetch('/shop/orders/', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+
+export const getCustomerOrders = () => apiFetch('/shop/orders/')
+
+export const getOrderDetails = (orderId) => apiFetch(`/shop/orders/${orderId}/pay/`)
+
+export const payOrderApi = (orderId) =>
+  apiFetch(`/shop/orders/${orderId}/pay/`, {
+    method: 'POST',
+  })
 
